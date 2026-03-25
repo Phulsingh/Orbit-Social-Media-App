@@ -80,21 +80,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider
-                  .GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate(); // ← auto runs migrations on startup
-}
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-app.UseHttpsRedirection(); 
-app.UseAuthentication();    
-app.UseAuthorization();     
-app.MapControllers();        
+app.UseCors("AllowAll");          // ✅ First
+
+app.UseSwagger();                // ✅ Always enabled
+app.UseSwaggerUI();
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
