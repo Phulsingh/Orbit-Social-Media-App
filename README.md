@@ -8,7 +8,7 @@ A private, secure family social networking application designed to connect famil
 
 ## 🚀 Overview
 
-FamilyNest is an invite-only platform where family members can:
+Orbit is an invite-only platform where family members can:
 
 - Stay connected through posts and chats
 - Share memories (photos, videos, stories)
