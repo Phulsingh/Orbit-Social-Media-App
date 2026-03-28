@@ -1,16 +1,16 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+using Orbit.Application.Interfaces;
 using Orbit.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Orbit.Infrastructure.Data
 {
-    public class ApplicationDbContext  :DbContext
+    public class ApplicationDbContext  :DbContext , IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
-
+        IQueryable<ApplicationUsers> IApplicationDbContext.Users => Users;
         public DbSet<ApplicationRoles> Roles { get; set; }
         public DbSet<ApplicationUsers> Users { get; set; }
         public DbSet<UserRoles> UserRoles { get; set; }
