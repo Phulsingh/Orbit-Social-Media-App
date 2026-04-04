@@ -95,7 +95,6 @@ namespace Orbit.API.Controllers
         {
             try
             {
-                command.UserId = GetUserId();
                 var result = await _mediator.Send(command);
                 return Ok(result);
             }
@@ -105,20 +104,30 @@ namespace Orbit.API.Controllers
             }
         }
 
-        // PUT api/family/{id}/approve/{memberId}
-        [HttpPut("{id}/approve/{memberId}")]
-        public async Task<IActionResult> ApproveMember(int id, int memberId)
+        // POST api/family/approve-member
+        [HttpPost("approve-member")]
+        public async Task<IActionResult> ApproveMember(
+            [FromBody] ApproveMemberCommand command)
         {
             try
             {
-                var command = new ApproveMemberCommand
-                {
-                    FamilyId = id,
-                    MemberId = memberId,
-                    AdminUserId = GetUserId()
-                };
                 var result = await _mediator.Send(command);
-                return Ok(new { message = "Member approved successfully." });
+                return Ok(new { message = "Member approved successfully", success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        // POST api/family/remove-member
+        [HttpPost("remove-member")]
+        public async Task<IActionResult> RemoveMember(
+            [FromBody] RemoveMemberCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return Ok(new { message = "Member removed successfully", success = result });
             }
             catch (Exception ex)
             {

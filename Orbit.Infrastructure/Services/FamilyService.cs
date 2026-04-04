@@ -125,6 +125,12 @@ namespace Orbit.Infrastructure.Services
         public async Task<string> GenerateInviteCodeAsync(
             int familyId, int adminUserId)
         {
+            
+            var familyExists = await _context.Families
+                .AnyAsync(f => f.Id == familyId);
+            if (!familyExists)
+                throw new Exception("Family not found");
+
             // Verify admin
             var isAdmin = await _context.FamilyMembers
                 .AnyAsync(m => m.FamilyId == familyId
@@ -143,7 +149,7 @@ namespace Orbit.Infrastructure.Services
                 old.IsUsed = true;
 
             // Generate new code
-            var code = $"FN-{new Random().Next(1000, 9999)}";
+            var code = $"FN-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
 
             var inviteCode = new InviteCode
             {
