@@ -22,5 +22,7 @@
         public DateTime? UpdatedAt { get; set; }
 
         public ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
+        public ICollection<FamilyMember> FamilyMembers { get; set; } = new List<FamilyMember>();
+        public ICollection<InviteCode> InviteCodes { get; set; }  = new List<InviteCode>();
     }
 }
