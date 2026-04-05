@@ -77,6 +77,7 @@ namespace Orbit.Infrastructure.Services
 
             return new AuthResponseDto
             {
+                Id = user.Id,
                 Token = token,
                 Expiration = expiry,
                 UserName = user.UserName,
@@ -120,6 +121,7 @@ namespace Orbit.Infrastructure.Services
 
             return new AuthResponseDto
             {
+                Id = user.Id,
                 Token = token,
                 Expiration = expiry,
                 UserName = user.UserName,
