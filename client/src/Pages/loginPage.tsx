@@ -1,6 +1,38 @@
 import { Mail, Lock, Key, Users} from 'lucide-react';
+import { useState } from 'react';
+import { useUserService } from '../Services/userService';
+
 
 export default function LoginPage() {
+    const { login } = useUserService();
+    const [emailOrUsername, setEmailOrUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+ const handleLogin = async () => {
+  setError("");
+  try {
+    const response = await login({
+      username: emailOrUsername, 
+      password,
+    });
+    alert("Login successful ✅");
+    console.log("Login response:", response);
+    setPassword("");
+    setEmailOrUsername(""); 
+
+  } catch (err: any) {
+    console.error("Login error:", err);
+    console.log(error);
+    setError(
+      err?.response?.data?.message ||
+      err?.message ||
+      "Login failed ❌"
+    );
+  }
+};
+
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-container/20 blur-[120px] rounded-full -z-10"></div>
@@ -23,6 +55,8 @@ export default function LoginPage() {
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={20} />
                   <input 
+                    value={emailOrUsername}
+                    onChange={(e) => setEmailOrUsername(e.target.value)}
                     type="text" 
                     className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-full focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline-variant"
                     placeholder="e.g., james.smith"
@@ -35,6 +69,8 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={20} />
                   <input 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password" 
                     className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-full focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline-variant"
                     placeholder="••••••••"
@@ -51,6 +87,7 @@ export default function LoginPage() {
               </div>
 
               <button 
+              onClick={handleLogin}
                 type="button"
                 className="w-full py-4 bg-primary text-on-primary font-bold rounded-full text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all duration-150"
               >
