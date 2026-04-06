@@ -12,5 +12,6 @@ namespace Orbit.Application.Interfaces
         Task<FamilyResponseDto> JoinFamilyAsync(int userId, JoinFamilyDto dto);
         Task<bool> ApproveMemberAsync(int familyId, int memberId, int adminUserId);
         Task<bool> RemoveMemberAsync(int familyId, int memberId, int adminUserId);
+        Task<List<FamilyResponseDto>> GetAllFamilyAsync();
     }
 }

@@ -261,6 +261,28 @@ namespace Orbit.Infrastructure.Services
             return true;
         }
 
+        // ─────────────────────────────────────────────
+        // GET ALL FAMILIES
+        // ─────────────────────────────────────────────
+
+        public async Task<List<FamilyResponseDto>> GetAllFamilyAsync()
+        {
+            var families = await _context.Families
+                 .Where(f => !f.IsDeleted)
+                 .Select(f => new FamilyResponseDto
+                 {
+                     Id = f.Id,
+                     FamilyName = f.FamilyName ?? string.Empty,
+                     FamilyCode = f.FamilyCode ?? string.Empty,
+                     Description = f.Description ?? string.Empty,
+                     PhotoUrl = f.PhotoUrl ?? string.Empty,
+                     TotalMembers = _context.FamilyMembers
+                                   .Count(m => m.FamilyId == f.Id && f.IsActive),
+                     CreatedAt = f.CreatedAt,
+                 }).ToListAsync();
+
+                 return families;
+        }
         private static FamilyResponseDto MapToDto(Family family, int totalMembers)
         {
             return new FamilyResponseDto
