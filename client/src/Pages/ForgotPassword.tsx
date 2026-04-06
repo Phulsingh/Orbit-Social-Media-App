@@ -1,31 +1,30 @@
-import { Mail, Lock, Key, Users} from 'lucide-react';
+import { Mail, Key, Users} from 'lucide-react';
 import { useState } from 'react';
 import { useUserService } from '../Services/userService';
 
+const ForgotPassword = () => {
 
-export default function LoginPage() {
-    const { login } = useUserService();
-    const [emailOrUsername, setEmailOrUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const { forgotPassword } = useUserService();
+    const [email, setEmail] = useState("");
+    const [errorr, setError] = useState("");
 
- const handleLogin = async () => {
-  try {
-    const response = await login({
-      username: emailOrUsername, 
-      password,
-    });
-    alert("Login successful ✅");
-    console.log("Login response:", response);
-    setPassword("");
-    setEmailOrUsername(""); 
-
-  } catch (err: unknown) {
-    console.error("Login error:", err);
-    const e = err as { response?: { data?: { message?: string } }; message?: string };
-    console.error(e);
-  }
-};
-
+    const handlePasswordReset = async()=>{
+        setError("");
+        try{
+            await forgotPassword({email});
+            alert("Reset link sent to your email ✅");
+            setEmail("");
+        }catch(err: unknown){
+            const error = err as { response?: { data?: { message?: string } }; message?: string };
+            console.error("Forgot password error:", err);
+            console.error(errorr);
+            setError(
+                error?.response?.data?.message ||
+                error?.message ||
+                "Failed to send reset link ❌"
+            );
+        }
+    }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
@@ -45,47 +44,24 @@ export default function LoginPage() {
           <div className="bg-surface-container-lowest rounded-xl p-8 space-y-6 shadow-sm border border-surface-container">
             <form className="space-y-5">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-on-surface-variant px-1">Email or Username</label>
+                <label className="block text-sm font-semibold text-on-surface-variant px-1">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={20} />
                   <input 
-                    value={emailOrUsername}
-                    onChange={(e) => setEmailOrUsername(e.target.value)}
                     type="text" 
                     className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-full focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline-variant"
                     placeholder="e.g., james.smith"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-on-surface-variant px-1">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={20} />
-                  <input 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password" 
-                    className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-full focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline-variant"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" id="remember" className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20" />
-                  <label htmlFor="remember" className="text-sm font-medium text-on-surface-variant">Remember me</label>
-                </div>
-                <a href="/forgot-password" className="text-sm font-bold text-primary hover:text-primary-dim transition-colors">Forgot Password?</a>
-              </div>
-
               <button 
-              onClick={handleLogin}
+                onClick={handlePasswordReset}
                 type="button"
                 className="w-full py-4 bg-primary text-white font-bold rounded-full text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all duration-150"
               >
-                Login
+                Send Reset Link
               </button>
             </form>
           </div>
@@ -117,5 +93,7 @@ export default function LoginPage() {
         </footer>
       </div>
     </div>
-  );
+  )
 }
+
+export default ForgotPassword
