@@ -1,9 +1,10 @@
 import { Mail, Key, Users} from 'lucide-react';
 import { useState } from 'react';
 import { useUserService } from '../Services/userService';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
-
+    const navigate = useNavigate();
     const { forgotPassword } = useUserService();
     const [email, setEmail] = useState("");
     const [errorr, setError] = useState("");
@@ -12,6 +13,7 @@ const ForgotPassword = () => {
         setError("");
         try{
             await forgotPassword({email});
+            navigate("/login");
             alert("Reset link sent to your email ✅");
             setEmail("");
         }catch(err: unknown){

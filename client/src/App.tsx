@@ -1,19 +1,38 @@
-import './App.css'
-import { Routes, Route } from "react-router-dom";
-import LoginPage from './Pages/loginPage';
-import ForgotPassword from './Pages/ForgotPassword';
-import ResetPassword from './Pages/ResetPassword';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 
-function App() {
+// Lazy Loaded Pages
+const LoginPage = lazy(() => import("./Pages/loginPage"));
+const ForgotPassword = lazy(() => import("./Pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./Pages/ResetPassword"));
+
+
+function AppContent() {
+  const isAuthenticated = false; 
+
   return (
-    <>
-   <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-    </Routes>
-    </>
-  )
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        {/* Public Routes */}
+        {!isAuthenticated && (
+          <>
+            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </>
+        )}
+
+        {/* Protected Routes */}
+        {isAuthenticated && (
+          <>
+           
+          </>
+        )}
+
+      </Routes>
+    </Suspense>
+  );
 }
 
-export default App
+export default AppContent;
