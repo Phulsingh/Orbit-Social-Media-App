@@ -134,5 +134,22 @@ namespace Orbit.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        // GET api/family/all
+        [HttpGet("all")]
+        [Authorize]
+        public async Task<IActionResult> GetAllFamily()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAllFamilyQuery());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
     }
 }
