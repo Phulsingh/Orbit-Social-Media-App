@@ -21,6 +21,16 @@ export interface AuthResponse {
   roles: string[];
 }
 
+export interface forgotPasswordRequest {
+  email: string;
+}
+
+export interface resetPasswordRequest{
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 // 👇 Hook-based service (same pattern as your reference)
 export const useUserService = () => {
   const api = apiService;
@@ -35,10 +45,18 @@ export const useUserService = () => {
       payload: RegisterRequest,
     ): Promise<AuthResponse> => {
       const response = await api.post("auth/register", payload);
-
       return response as AuthResponse;
     },
+   
+     forgotPassword: async (payload: forgotPasswordRequest): Promise<void> => {
+      const response = await api.post("Auth/forgot-password", payload);
+      return response as void;
+    },
 
+    resetPassword: async (payload: resetPasswordRequest): Promise<void> => {
+      const response = await api.post("Auth/reset-password", payload);
+      return response as void;
+    },
     // 🚪 LOGOUT
     logout: () => {
       localStorage.removeItem("token");
