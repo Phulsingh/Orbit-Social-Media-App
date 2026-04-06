@@ -1,16 +1,58 @@
 import { KeyRound, Lock,Users} from 'lucide-react';
-// import { useUserService } from '../Services/userService';
+import { useUserService } from '../Services/userService';
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
+const validatePassword = (password: string) => {
+  const minLength = 8;
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/;
+
+  if (password.length < minLength) {
+    return "Password must be at least 8 characters long";
+  }
+
+  if (!regex.test(password)) {
+    return "Password must include uppercase, lowercase, number, and special character";
+  }
+
+  return null; // valid
+};
+
 const ResetPassword = () => {
-    // const { resetPassword } = useUserService();
+    const { resetPassword } = useUserService();
     const [searchParams] = useSearchParams();
     const [token, setToken] = useState(() => searchParams.get("token") ?? "");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    // const [error, setError] = useState("");
+   
+    const handleResetPassword = async ()=>{
+        if(newPassword !== confirmPassword){
+            alert("Passwords do not match ❌");
+            return;
+        }
 
+        const passwordError = validatePassword(newPassword);
+        if (passwordError) {
+            alert(passwordError);
+            return;
+        }
+
+        try{
+            await resetPassword({token, newPassword, confirmPassword});
+            alert("Password reset successful ✅");
+            setToken("");
+            setNewPassword("");
+            setConfirmPassword("");
+        }catch(err: unknown){
+            console.error("Reset password error:", err);
+            const error = err as { response?: { data?: { message?: string } }; message?: string };
+            alert(
+                error?.response?.data?.message ||
+                error?.message ||
+                "Failed to reset password ❌"
+            );
+        }
+    }
 
 
 
@@ -71,7 +113,7 @@ const ResetPassword = () => {
                 </div>
               </div>
               <button 
-                // onClick={handlePasswordReset}
+                onClick={handleResetPassword}
                 type="button"
                 className="w-full py-4 cursor-pointer bg-primary text-white font-bold rounded-full text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all duration-150"
               >
