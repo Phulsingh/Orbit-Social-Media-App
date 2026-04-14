@@ -1,35 +1,5 @@
 import { apiService } from "./apiService";
-
-// 🔐 Request DTOs
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export interface AuthResponse {
-  id : number;
-  token: string;
-  expiration: string;
-  userName: string;
-  email: string;
-  roles: string[];
-}
-
-export interface forgotPasswordRequest {
-  email: string;
-}
-
-export interface resetPasswordRequest{
-  token: string;
-  newPassword: string;
-  confirmPassword: string;
-}
+import type { LoginRequest, RegisterRequest, AuthResponse, forgotPasswordRequest, resetPasswordRequest } from "../types/Auth";
 
 // 👇 Hook-based service (same pattern as your reference)
 export const useUserService = () => {

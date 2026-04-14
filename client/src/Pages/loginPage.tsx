@@ -1,10 +1,15 @@
 import { Mail, Lock, Key, Users} from 'lucide-react';
 import { useState } from 'react';
 import { useUserService } from '../Services/userService';
+import { useDispatch } from "react-redux";
+import { loginSuccess } from '../Store/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function LoginPage() {
+    const navigate = useNavigate();
     const { login } = useUserService();
+    const dispatch = useDispatch();
     const [emailOrUsername, setEmailOrUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -14,11 +19,12 @@ export default function LoginPage() {
       username: emailOrUsername, 
       password,
     });
+    dispatch(loginSuccess(response));
+    localStorage.setItem("auth", JSON.stringify(response));
     alert("Login successful ✅");
-    console.log("Login response:", response);
     setPassword("");
     setEmailOrUsername(""); 
-
+    navigate("/home"); // Redirect to the dashboard or home page after successful login
   } catch (err: unknown) {
     console.error("Login error:", err);
     const e = err as { response?: { data?: { message?: string } }; message?: string };
@@ -91,7 +97,7 @@ export default function LoginPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-1 bg-secondary-container/50 p-6 rounded-lg flex flex-col items-center justify-center text-center space-y-2 group cursor-pointer hover:bg-secondary-container transition-colors border border-secondary-container/30">
+            <div onClick={()=> navigate("/register")} className="col-span-1 bg-secondary-container/50 p-6 rounded-lg flex flex-col items-center justify-center text-center space-y-2 group cursor-pointer hover:bg-secondary-container transition-colors border border-secondary-container/30">
               <Key className="text-secondary" size={32} />
               <span className="text-xs font-bold text-on-secondary-container leading-tight">Join with Invite Code</span>
             </div>
