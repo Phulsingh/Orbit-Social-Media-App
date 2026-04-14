@@ -18,6 +18,9 @@ namespace Orbit.Application.Features.Auth.Handlers
            RegisterCommand request,
            CancellationToken cancellationToken)
         {
+            var roleIds = (request.RoleIds == null || !request.RoleIds.Any())
+               ? new List<int> { 1 }
+               : request.RoleIds;
             // Map Command → DTO
             var dto = new RegisterRequestDto
             {
